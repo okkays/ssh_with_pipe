@@ -20,7 +20,7 @@ function add_if_not_exists() {
 }
 
 rcfile="$HOME/.bashrc"
-binary=tmux_lib
+binary=ssh_with_pipe
 binary_path_raw="$(realpath "$(dirname $0)")/bin/$binary"
 binary_path="${binary_path_raw/#$HOME/\$HOME}"
 
@@ -40,3 +40,10 @@ add_if_not_exists \
   ". \"$binary_path\"" \
   "$rcfile" \
   "$binary"
+
+printf <<-EOF
+Make sure to put the contents of remote-bin in the PATH of the ssh server.
+
+You can either do this manually, or repeat the installation process on the
+remote (the additions to .bashrc should accomplish this).
+EOF

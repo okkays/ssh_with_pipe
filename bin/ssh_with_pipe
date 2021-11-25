@@ -109,3 +109,16 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   __swp_main "$@"
   exit $?
 fi
+
+# Check whether we're controlled by ssh.
+function _swp_is_remote() {
+  if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+if _swp_is_remote ; then
+  export PATH="$(dirname $0)/remote-bin:$PATH"
+fi
