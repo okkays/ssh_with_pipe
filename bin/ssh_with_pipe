@@ -120,5 +120,5 @@ function _swp_is_remote() {
 }
 
 if _swp_is_remote ; then
-  export PATH="$(dirname $0)/remote-bin:$PATH"
+  export PATH="$(dirname "$0")/remote-bin:$PATH"
 fi

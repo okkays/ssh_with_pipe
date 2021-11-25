@@ -33,7 +33,7 @@ fi
 
 add_if_not_exists \
   "Auto-reclone for https://github.com/okkays/$binary" \
-  "[[ ! -d \"$repo_path\" ]] && [[ command -v gh ]] && gh repo clone okkays/$binary" \
+  "[[ ! -d \"$repo_path\" ]] && command -v gh && gh repo clone \"okkays/$binary\" \"$repo_path\"" \
   "$rcfile" \
   "$binary"
 
