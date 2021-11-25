@@ -21,7 +21,7 @@ function add_if_not_exists() {
 
 rcfile="$HOME/.bashrc"
 binary=ssh_with_pipe
-binary_path_raw="$(realpath "$(dirname $0)")/bin/$binary"
+binary_path_raw="$(realpath "$(dirname "$0")")/bin/$binary"
 binary_path="${binary_path_raw/#$HOME/\$HOME}"
 repo_path_raw="$(dirname "$(dirname "$binary_path")")"
 repo_path="${repo_path_raw/#$HOME/\$HOME}"
@@ -39,7 +39,7 @@ add_if_not_exists \
 
 add_if_not_exists \
   "Configuration for https://github.com/okkays/$binary" \
-  "PATH=\"$(dirname $binary_path):\$PATH\"" \
+  "PATH=\"$(dirname "$binary_path"):\$PATH\"" \
   "$rcfile" \
   "$binary"
 
