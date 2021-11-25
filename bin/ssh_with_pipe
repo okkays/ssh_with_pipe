@@ -1,0 +1,80 @@
+#!/bin/bash
+
+tmpdir="${TMPDIR-/tmp}"
+SSH_PIPE_FILE="$tmpdir/ssh_with_pipe"
+SSH_PIPE_LOCKFILE="$tmpdir/ssh_with_pipe.lock"
+SSH_PIPE_LOG="$tmpdir/ssh_with_pipe.out"
+
+function swp_watch() {
+  if [[ -f "$SSH_PIPE_LOCKFILE" ]]; then
+    echo "$SSH_PIPE_LOCKFILE exists, not watching."
+    return 1
+  fi
+  nohup bash -c "ssh_with_pipe _do_tail" >> "$SSH_PIPE_LOG" &
+  return 0
+}
+
+function _swp_cleanup_tail() {
+  rm -f "$SSH_PIPE_LOCKFILE"
+  echo "--- Watcher $$ exiting at $(date -R) ---" >> "$SSH_PIPE_LOG"
+}
+
+function _swp_do_tail() {
+  touch "$SSH_PIPE_LOCKFILE"
+  echo "--- Watcher $$ starting at $(date -R) ---" >> "$SSH_PIPE_LOG"
+  trap "_swp_cleanup_tail" EXIT INT TERM
+  while read line; do
+    echo "Opening $line" >> "$SSH_PIPE_LOG"
+    open "$line" 2>> "$SSH_PIPE_LOG";
+  done < <(tail -f -n 0 "$SSH_PIPE_FILE")
+}
+
+function swp_connect() {
+  touch "$SSH_PIPE_FILE"
+  if swp_watch; then
+    trap 'swp_release' EXIT INT TERM
+    ssh $1 "touch '$SSH_PIPE_FILE' && tail -f -n 0 '$SSH_PIPE_FILE'" 1>> "$SSH_PIPE_FILE" 2>> "$SSH_PIPE_LOG" &
+    open_ssh="$!"
+  fi
+  ssh $@
+}
+
+function swp_log() {
+  trap 'jobs -p | xargs -r kill' EXIT INT TERM
+  tail -f -n +0 "$SSH_PIPE_LOG"
+}
+
+function swp_release() {
+  pkill -f "tail -f -n 0 $tmpdir/ssh_with_pipe"
+  rm -f "$SSH_PIPE_LOCKFILE"
+  jobs -p | xargs -r kill
+}
+
+
+cmd="$1"
+shift 1
+case "$cmd" in
+  connect)
+    swp_connect "$@"
+    ;;
+
+  log)
+    swp_log "$@"
+    ;;
+
+  watch)
+    swp_watch "$@"
+    ;;
+
+  release)
+    swp_release "$@"
+    ;;
+
+  _do_tail)
+    _swp_do_tail "$@"
+    ;;
+
+  *)
+    echo 'Invalid command! Supply "connect", "watch", "release", "log"'
+    ;;
+esac
