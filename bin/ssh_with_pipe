@@ -28,6 +28,7 @@ EOF
   }
 
   function _swp_do_tail() {
+    mkdir -p "$(dirname "$SSH_PIPE_LOCKFILE")"
     touch "$SSH_PIPE_LOCKFILE"
     echo "--- Watcher $$ starting at $(date -R) ---" >> "$SSH_PIPE_LOG"
     trap "_swp_cleanup_tail" EXIT INT TERM
@@ -44,10 +45,10 @@ ssh_with_pipe connect [[user@]host:[port]] [rest_of_args_for_ssh]
 \tpipe, and the second actually connects to ssh.
 EOF
   function swp_connect() {
-    touch "$SSH_PIPE_FILE"
     if swp_watch; then
       trap 'swp_release' EXIT INT TERM
-      ssh $1 "touch '$SSH_PIPE_FILE' && tail -f -n 0 '$SSH_PIPE_FILE'" 1>> "$SSH_PIPE_FILE" 2>> "$SSH_PIPE_LOG" &
+      mkdir -p "$(dirname "$SSH_PIPE_FILE")"
+      ssh $1 'touch "${TMPDIR-/tmp}/ssh_with_pipe" && tail -f -n 0 "${TMPDIR-/tmp}/ssh_with_pipe"' 1>> "$SSH_PIPE_FILE" 2>> "$SSH_PIPE_LOG" &
       open_ssh="$!"
     fi
     ssh $@
