@@ -23,11 +23,19 @@ rcfile="$HOME/.bashrc"
 binary=ssh_with_pipe
 binary_path_raw="$(realpath "$(dirname $0)")/bin/$binary"
 binary_path="${binary_path_raw/#$HOME/\$HOME}"
+repo_path_raw="$(dirname "$(dirname "$binary_path")")"
+repo_path="${repo_path_raw/#$HOME/\$HOME}"
 
 if [[ ! -f "$rcfile" ]]; then
   echo "Couldn't find: $rcfile"
   exit 1
 fi
+
+add_if_not_exists \
+  "Auto-reclone for https://github.com/okkays/$binary" \
+  "[[ ! -d \"$repo_path\" ]] && [[ command -v gh ]] && gh repo clone okkays/$binary" \
+  "$rcfile" \
+  "$binary"
 
 add_if_not_exists \
   "Configuration for https://github.com/okkays/$binary" \
