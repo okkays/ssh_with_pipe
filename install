@@ -41,9 +41,13 @@ add_if_not_exists \
   "$rcfile" \
   "$binary"
 
-printf <<-EOF
+cat <<-EOF
+
+!!! Extra step needed !!!
+
 Make sure to put the contents of remote-bin in the PATH of the ssh server.
 
 You can either do this manually, or repeat the installation process on the
 remote (the additions to .bashrc should accomplish this).
+
 EOF
