@@ -40,9 +40,9 @@ EOF
     fi
 
     local args="${row#"$cmd "}"
-    args="${args//\\n/$'\n'}" # Unescape any newlines
-    echo "Running '$cmd $args'" >> "$SSH_PIPE_LOG"
-    $cmd $args 2>> "$SSH_PIPE_LOG";
+    args="${args//NEWLINE_FOR_COPY/$'\n'}" # Unescape any newlines
+    echo "Running: $cmd '$args'" >> "$SSH_PIPE_LOG"
+    $cmd "$args" 2>> "$SSH_PIPE_LOG";
     return 0;
   }
 
