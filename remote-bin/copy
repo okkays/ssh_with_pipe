@@ -8,4 +8,6 @@ if [[ -z "$SSH_PIPE_FILE" ]]; then
   copy $@
   return $?
 fi
-echo "copy $@" >> "$SSH_PIPE_FILE"
+
+to_copy="${*//$'\n'/\\n}" # Escape newlines in input.
+echo "copy '$to_copy'" >> "$SSH_PIPE_FILE"

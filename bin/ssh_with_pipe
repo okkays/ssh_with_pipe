@@ -29,19 +29,21 @@ EOF
 
   function _swp_handle_row() {
     local row="$1"
+    local cmd
     if [[ "$row" == "open "* ]]; then
-      local args="${row#'open '}"
-      echo "Opening $args" >> "$SSH_PIPE_LOG"
-      open $args 2>> "$SSH_PIPE_LOG";
-      return 0;
+      cmd="open"
     elif [[ "$row" == "copy "* ]]; then
-      local args="${row#'copy '}"
-      echo "Copying $args" >> "$SSH_PIPE_LOG"
-      copy $args 2>> "$SSH_PIPE_LOG";
-      return 0;
+      cmd="copy"
+    else
+      echo "Unrecognized command: '$row' [can be: open, copy]" >> "$SSH_PIPE_LOG"
+      return 1;
     fi
-    echo "Unrecognized command: '$row' [can be: open, copy]" >> "$SSH_PIPE_LOG"
-    return 1;
+
+    local args="${row#"$cmd "}"
+    args="${args//\\n/$'\n'}" # Unescape any newlines
+    echo "Running '$cmd $args'" >> "$SSH_PIPE_LOG"
+    $cmd $args 2>> "$SSH_PIPE_LOG";
+    return 0;
   }
 
   function _swp_do_tail() {
