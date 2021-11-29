@@ -6,4 +6,4 @@ if [[ -z "$SSH_OPEN_FILE" ]]; then
   open $@
   return $?
 fi
-echo "$@" >> "$SSH_OPEN_FILE"
+echo "open $@" >> "$SSH_OPEN_FILE"

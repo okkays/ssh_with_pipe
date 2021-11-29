@@ -27,14 +27,25 @@ EOF
     echo "--- Watcher $$ exiting at $(date -R) ---" >> "$SSH_PIPE_LOG"
   }
 
+  function _swp_handle_row() {
+    local row="$1"
+    if [[ "$row" == "open "* ]]; then
+      echo "Opening $row" >> "$SSH_PIPE_LOG"
+      local args="${row#'open '}"
+      open $args 2>> "$SSH_PIPE_LOG";
+      return 0;
+    fi
+    echo "Unrecognized command: $row" >> "$SSH_PIPE_LOG"
+    return 1;
+  }
+
   function _swp_do_tail() {
     mkdir -p "$(dirname "$SSH_PIPE_LOCKFILE")"
     touch "$SSH_PIPE_LOCKFILE"
     echo "--- Watcher $$ starting at $(date -R) ---" >> "$SSH_PIPE_LOG"
     trap "_swp_cleanup_tail" EXIT INT TERM
     while read line; do
-      echo "Opening $line" >> "$SSH_PIPE_LOG"
-      open "$line" 2>> "$SSH_PIPE_LOG";
+      _swp_handle_row "$line"
     done < <(tail -f -n 0 "$SSH_PIPE_FILE")
   }
 
