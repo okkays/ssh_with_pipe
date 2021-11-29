@@ -6,6 +6,11 @@ SSH_PIPE_LOG="$tmpdir/ssh_with_pipe.out"
 if command -v pbcopy > /dev/null; then
   echo "$@" | pbcopy
   return $?
+elif [ -n "$DISPLAY" ] && command -v xsel>/dev/null; then
+  echo "$@" | xsel --clipboard --input
+  return $?
+elif [ -n "$TMUX" ]; then
+  echo "$@" | tmux load-buffer -
 fi
 
 echo "No command found to execute the copy." >> "$SSH_PIPE_LOG"
