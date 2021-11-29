@@ -7,12 +7,13 @@ set -- "${1:-$(</dev/stdin)}" "${@:2}"
 
 if command -v pbcopy > /dev/null; then
   echo "$@" | pbcopy
-  return $?
+  exit $?
 elif [ -n "$DISPLAY" ] && command -v xsel>/dev/null; then
   echo "$@" | xsel --clipboard --input
-  return $?
+  exit $?
 elif [ -n "$TMUX" ]; then
   echo "$@" | tmux load-buffer -
+  exit $?
 fi
 
 echo "No command found to execute the copy." >> "$SSH_PIPE_LOG"
