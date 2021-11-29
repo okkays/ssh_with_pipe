@@ -2,6 +2,8 @@
 
 Starts ssh with an additional session for piping commands.
 
+![A demo of the features described below](demo.gif)
+
 ## Installation
 
 ```bash
