@@ -38,7 +38,7 @@ EOF
     if [[ "$row" == "copy "* ]]; then
       local args="${row#'copy '}"
       echo "Copying $args" >> "$SSH_PIPE_LOG"
-      ./copy $args 2>> "$SSH_PIPE_LOG";
+      copy $args 2>> "$SSH_PIPE_LOG";
       return 0;
     fi
     echo "Unrecognized command: $row" >> "$SSH_PIPE_LOG"
