@@ -1,0 +1,9 @@
+#!/bin/bash
+
+SSH_PIPE_FILE="/tmp/ssh_with_pipe"
+
+if [[ -z "$SSH_PIPE_FILE" ]]; then
+  copy $@
+  return $?
+fi
+echo "copy $@" >> "$SSH_PIPE_FILE"

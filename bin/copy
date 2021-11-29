@@ -1,0 +1,11 @@
+#!/bin/bash
+
+tmpdir="${TMPDIR-/tmp}"
+SSH_PIPE_LOG="$tmpdir/ssh_with_pipe.out"
+
+if command -v pbcopy > /dev/null; then
+  echo "$@" | pbcopy
+  return $?
+fi
+
+echo "No command found to execute the copy." >> "$SSH_PIPE_LOG"
