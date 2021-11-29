@@ -34,8 +34,7 @@ EOF
       echo "Opening $args" >> "$SSH_PIPE_LOG"
       open $args 2>> "$SSH_PIPE_LOG";
       return 0;
-    fi
-    if [[ "$row" == "copy "* ]]; then
+    elif [[ "$row" == "copy "* ]]; then
       local args="${row#'copy '}"
       echo "Copying $args" >> "$SSH_PIPE_LOG"
       copy $args 2>> "$SSH_PIPE_LOG";
