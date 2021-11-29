@@ -5,9 +5,9 @@ SSH_PIPE_FILE="/tmp/ssh_with_pipe"
 set -- "${1:-$(cat -)}" "${@:2}"
 
 if [[ -z "$SSH_PIPE_FILE" ]]; then
-  copy $@
+  copy "$@"
   return $?
 fi
 
-to_copy="${*//$'\n'/\\n}" # Escape newlines in input.
-echo "copy '$to_copy'" >> "$SSH_PIPE_FILE"
+to_copy="${*//$'\n'/NEWLINE_FOR_COPY}" # Escape newlines in input.
+echo "copy $to_copy" >> "$SSH_PIPE_FILE"
