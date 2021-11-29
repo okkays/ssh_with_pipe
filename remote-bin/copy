@@ -2,6 +2,8 @@
 
 SSH_PIPE_FILE="/tmp/ssh_with_pipe"
 
+set -- "${1:-$(</dev/stdin)}" "${@:2}"
+
 if [[ -z "$SSH_PIPE_FILE" ]]; then
   copy $@
   return $?

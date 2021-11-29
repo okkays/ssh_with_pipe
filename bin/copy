@@ -3,6 +3,8 @@
 tmpdir="${TMPDIR-/tmp}"
 SSH_PIPE_LOG="$tmpdir/ssh_with_pipe.out"
 
+set -- "${1:-$(</dev/stdin)}" "${@:2}"
+
 if command -v pbcopy > /dev/null; then
   echo "$@" | pbcopy
   return $?
