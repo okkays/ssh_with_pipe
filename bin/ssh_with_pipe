@@ -41,7 +41,7 @@ EOF
       copy $args 2>> "$SSH_PIPE_LOG";
       return 0;
     fi
-    echo "Unrecognized command: $row" >> "$SSH_PIPE_LOG"
+    echo "Unrecognized command: '$row' [can be: open, copy]" >> "$SSH_PIPE_LOG"
     return 1;
   }
 
