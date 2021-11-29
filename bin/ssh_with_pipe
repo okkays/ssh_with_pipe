@@ -30,8 +30,8 @@ EOF
   function _swp_handle_row() {
     local row="$1"
     if [[ "$row" == "open "* ]]; then
-      echo "Opening $row" >> "$SSH_PIPE_LOG"
       local args="${row#'open '}"
+      echo "Opening $args" >> "$SSH_PIPE_LOG"
       open $args 2>> "$SSH_PIPE_LOG";
       return 0;
     fi
