@@ -10,6 +10,23 @@ cd ~/.ssh_with_pipe
 ./install
 ```
 
+### Optional bindings
+
+For tmux integration:
+
+```tmux
+bind-key -Tcopy-mode-vi 'y' send -X copy-pipe-and-cancel "$HOME/.ssh_with_pipe/remote-bin/copy"
+```
+
+For vim integration:
+
+```vim
+" Copy to everything, always.
+if has('nvim')
+  autocmd TextYankPost * silent! call system('copy', v:event["regcontents"])
+endif
+```
+
 ## Features
 
 `open` on the remote host will run `open` on the client, instead. This allows
