@@ -8,6 +8,9 @@ set -- "${1:-$(cat -)}" "${@:2}"
 if command -v pbcopy > /dev/null; then
   echo "$@" | pbcopy
   exit $?
+elif command -v wl-copy > /dev/null; then
+  echo "$@" | wl-copy
+  exit $?
 elif [ -n "$DISPLAY" ] && command -v xsel>/dev/null; then
   echo "$@" | xsel --clipboard --input
   exit $?
